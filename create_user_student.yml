@@ -1,0 +1,12 @@
+- name: Tworzenie użytkownika student
+  hosts: windows
+  tasks:
+  - name: Tworzenie użytkownika student
+    win_user:
+     name: student
+     password: student
+     state: present
+     password_never_expires: yes
+     user_cannot_change_password: no
+     groups:
+     - Użytkownicy

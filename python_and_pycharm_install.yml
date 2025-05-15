@@ -1,0 +1,32 @@
+- name: Instalacja Pythona i PyCharma + wstępna konfiguracja
+  hosts: windows
+  tasks:
+
+    - name: Zainstaluj Python
+      win_chocolatey:
+        name: python
+        state: present
+
+    - name: Zainstaluj PyCharm Community Edition
+      win_chocolatey:
+        name: pycharm-community
+        state: present
+
+    - name: Utwórz folder konfiguracyjny PyCharma
+      win_file:
+        path: 'C:\Users\student\.PyCharmCE2023.3\config\options'
+        state: directory
+
+    - name: Zapisz plik konfiguracji (symulacja przeklikanego kreatora)
+      win_copy:
+        dest: 'C:\Users\student\.PyCharmCE2023.3\config\options\ide.general.xml'
+        content: |
+          <application>
+            <component name="GeneralSettings">
+              <option name="confirmExit" value="false" />
+            </component>
+            <component name="PropertiesComponent">
+              <property name="did.run.welcome.screen" value="true" />
+              <property name="show.tips.on.startup.default.value" value="false" />
+            </component>
+          </application>

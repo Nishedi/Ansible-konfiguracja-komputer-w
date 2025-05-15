@@ -1,0 +1,7 @@
+winrm quickconfig
+winrm set winrm/config/service/Auth '@{Basic="true"}'
+winrm set winrm/config/service '@{AllowUnencrypted="true"}'
+Set-Item -Path WSMan:\localhost\Service\AllowUnencrypted -Value $true
+Enable-PSRemoting -Force
+
+New-NetFirewallRule -Name "WinRM HTTP" -DisplayName "Allow WinRM HTTP" -Protocol TCP -LocalPort 5985 -Action Allow
