@@ -1,0 +1,13 @@
+- name: Instalacja VirtualBox i import maszyny
+  hosts: windows
+  tasks:
+    - name: Zainstaluj VirtualBox
+      win_chocolatey:
+        name: virtualbox
+        state: present
+
+    - name: Skopiuj plik OVA na Windowsa
+      win_copy:
+        src: ./linux.ova
+        dest: C:\Users\student\linux.ova
+

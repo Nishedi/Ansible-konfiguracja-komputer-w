@@ -1,0 +1,33 @@
+
+- name: Rejestruj VM jako student
+  hosts: windows
+  gather_facts: no
+  vars:
+    student_password: "student"
+
+  tasks:
+
+    - name: Utwórz skrypt rejestracji maszyny
+      win_copy:
+        dest: 'C:\Users\student\register_vm.ps1'
+        content: |
+          & "C:\Program Files\Oracle\VirtualBox\VBoxManage.exe" registervm "C:\Users\student\VMs\AnsibleVM\AnsibleVM.vbox"
+
+    - name: Utwórz zadanie harmonogramu jako student
+      win_scheduled_task:
+        name: RegisterVBoxStudent
+        description: Rejestruje VM w VirtualBox jako student
+        actions:
+          - path: powershell.exe
+            arguments: -ExecutionPolicy Bypass -File "C:\Users\student\register_vm.ps1"
+        username: student
+        password: "{{ student_password }}"
+        run_level: highest
+        state: present
+        enabled: yes
+        trigger:
+          - type: once
+            start_boundary: '2025-05-19T18:00:00'  # <- ustaw aktualną godzinę +1 min
+
+    - name: Uruchom zadanie od razu
+      win_shell: schtasks /Run /TN RegisterVBoxStudent

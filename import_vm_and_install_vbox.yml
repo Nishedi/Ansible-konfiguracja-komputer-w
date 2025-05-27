@@ -1,0 +1,33 @@
+- name: Sprawdzenie obecności VBoxManage.exe
+  hosts: windows
+  gather_facts: false
+
+  tasks:
+    - name: Czy VBoxManage.exe istnieje?
+      win_stat:
+        path: 'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe'
+      register: vbox_check
+
+    - name: Debug – pokaż cały wynik z win_stat
+      debug:
+        var: vbox_check
+
+    - name: VBoxManage istnieje – potwierdzenie
+      debug:
+        msg: "✅ VBoxManage.exe ZOSTAŁ ZNALEZIONY!"
+      when: vbox_check.stat.exists | default(false)
+
+    - name: VBoxManage NIE istnieje – alert
+      debug:
+        msg: "❌ VBoxManage.exe NIE ZOSTAŁ znaleziony w podanej ścieżce."
+      when: not vbox_check.stat.exists | default(false)
+    
+    - name: Utwórz folder na maszynę wirtualną jeżeli jej nie ma
+      win_file: 
+       path: 'C:\Users\student\VMs'
+       state: directory  
+      
+    - name: Importuj maszynę do folderu
+      win_shell: |
+       cmd /c ""C:\Progra~1\Oracle\VirtualBox\VBoxManage.exe" import "C:\Users\student\linux.ova" --vsys 0 --vmname AnsibleVM --basefolder "C:\Users\student\VMs""
+

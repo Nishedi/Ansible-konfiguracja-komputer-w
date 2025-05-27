@@ -1,0 +1,23 @@
+- name: Instalacja Visual Studio 2022 Community Edition z wybranymi workloadami
+  hosts: windows
+  gather_facts: no
+  tasks:
+
+    - name: Pobierz instalator Visual Studio
+      win_get_url:
+        url: https://aka.ms/vs/17/release/vs_Community.exe
+        dest: C:\Windows\Temp\vs_community.exe
+
+    - name: Uruchom instalator Visual Studio z komponentami
+      win_shell: >
+        C:\Windows\Temp\vs_community.exe
+        --quiet --wait --norestart --nocache
+        --add Microsoft.VisualStudio.Workload.NetWeb
+        --add Microsoft.VisualStudio.Workload.Python
+        --add Microsoft.VisualStudio.Workload.Node
+        --add Microsoft.VisualStudio.Workload.ManagedDesktop
+        --add Microsoft.VisualStudio.Workload.NativeDesktop
+        --add Microsoft.VisualStudio.Workload.Azure
+        --add Microsoft.Component.Python3.x64
+        --includeRecommended
+        --installPath "C:\Program Files\Microsoft Visual Studio\2022\Community"
